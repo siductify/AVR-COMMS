@@ -18,3 +18,26 @@ typedef enum{
   SPI_ERROR_OVERRUN_AND_MODE_FAULT
 }spi_status_t;
 
+typedef struct{
+  unsigned char reg; //identifies which SPI register to use
+  unsigned int baurate; //Stores the desires clock frequency in Hz (bits per second)
+  unsigned char bits; //Sets the number of transmitted charecters, from 8-16
+  unsigned char spck_delay; //sets delay between selecting slave and first clock pulse
+  unsigned char trans_delay; //sets delay between successive spi transfers
+  unsigned char stay_act; //decides if the slave-select signal stays active after a transfer
+  unsigned char spi_mode; //selects spi clock mode
+  unsigned char modfdis; //checks if SPI mode fault is disabled.
+}spi_options_t;
+
+#if defined(__AVR32__)
+extern void spi_reset(volatile avr32_spi_t *spi); //declears a function that resets SPI periphs
+
+
+#elif defined(__AVR_ATmega328P__)
+void spi_reset (void);
+
+#else
+ #error "UNSUPPORTED MCU"
+#endif
+
+//loading...
