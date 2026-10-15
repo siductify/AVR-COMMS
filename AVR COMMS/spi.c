@@ -38,3 +38,29 @@ static int getBaudDiv(constant spi_options_t *options, unsigned int pba_hz) //ba
     } 
     return baudDiv;
 }
+
+void spi_reset(volatile spi32_avr_t *spi){
+    spi->cr = AVR32_SPI_CR_SWRT_MASK;   //activates the software reset command
+}
+spi_status_t spi_initSlave(volatile avr32_spi_t *spi, unsigned char bits, unsigned char spi_mode)
+{
+    if(spi_mode > 3 || bits<8 || bits>16){
+        return SPI_ERROR_ARGUMENT;
+    }
+    //reset
+    spi->cr = AVR32_SPI_CR_SWRST_MASK;
+    //
+    ((spi_mode>>1)<<AVR32_SPI_CSR0_CPOL_OFFSET)| 
+    (((spi_mode & 0x1)^0x1)<<AVR32_SPI_CSR0_NCPHA_OFFSET)|
+    ((bits-8)<<AVR32_SPICSR0_BITS_OFFSET);
+
+    return SPI_OK;
+}
+
+spi_status_t spi_initTest(volatile avr32_spi_t *spi){
+    spi->cr = AVR32_SPI_CR_SWRST_MASK;
+    spi->mr |= AVR32_SPI_MR_MSTR_MASK|
+               AVR32_SPI_MR_LLB_MASK;
+    return SPI_OK;
+}
+//loading...
