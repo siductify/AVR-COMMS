@@ -50,17 +50,17 @@ spi_status_t spi_initSlave(volatile avr32_spi_t *spi, unsigned char bits, unsign
     //reset
     spi->cr = AVR32_SPI_CR_SWRST_MASK;
     //
-    ((spi_mode>>1)<<AVR32_SPI_CSR0_CPOL_OFFSET)| 
-    (((spi_mode & 0x1)^0x1)<<AVR32_SPI_CSR0_NCPHA_OFFSET)|
+    ((spi_mode>>1)<<AVR32_SPI_CSR0_CPOL_OFFSET)|              //extracts CPOL from spi_mode, shifts it into register's CPOL field and writes the result in CSR0
+    (((spi_mode & 0x1)^0x1)<<AVR32_SPI_CSR0_NCPHA_OFFSET)|   //extracting the lowest bit (0x1 is the hexadecimal for 1)and flipping that bit
     ((bits-8)<<AVR32_SPICSR0_BITS_OFFSET);
 
     return SPI_OK;
 }
 
 spi_status_t spi_initTest(volatile avr32_spi_t *spi){
-    spi->cr = AVR32_SPI_CR_SWRST_MASK;
-    spi->mr |= AVR32_SPI_MR_MSTR_MASK|
-               AVR32_SPI_MR_LLB_MASK;
+    spi->cr = AVR32_SPI_CR_SWRST_MASK;                                        //software reset command
+    spi->mr |= AVR32_SPI_MR_MSTR_MASK|                                       //sets the master mode bit and 
+               AVR32_SPI_MR_LLB_MASK;                                       //local feedback loop bit. the | operation combines both into 1 value
     return SPI_OK;
 }
 //loading...
