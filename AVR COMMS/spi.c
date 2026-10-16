@@ -63,4 +63,21 @@ spi_status_t spi_initTest(volatile avr32_spi_t *spi){
                AVR32_SPI_MR_LLB_MASK;                                       //local feedback loop bit. the | operation combines both into 1 value
     return SPI_OK;
 }
-//loading...
+spi_status_initMaster(volatile avr32_spi_t *t, const spi_options_t *options){
+    u_avr32_spi_mr_t u_avr32_spi_mr;
+
+    if (options -> modfdis>1){
+         return SPI_ARGUMENT;                      //modfdis is binary and has 0 and 1 as its value. 
+    }
+
+spi->mr=AVR32_SPI_CR_SWRT_MASK;
+
+ //Here, the individual bits are modified using union and fed back to SPI pheripheral
+u_avr32_spi_mr.mr = spi->mr;  //copies the current spi value into the union
+u_avr32_spi_mr.MR.MSTR = 1;    //MSTR=1 makes the mode into master from slave, which is 0                    
+u_avr32_spi_mr.MR.mofdis = options->mofdis;  //stands for mode fault disable. 0 disables Mode Fault Disable, 1 enables it
+u_avr32_spi_mr.MR.llb = 0;   //llb stands for local loopback. setting it to 0 disbales it.
+u_avr32_spi_mr.MR.pcs = (1<<AVR32_SPI_MR_PCS_SIZE) -1;   
+spi->mr = u_avr32_spi_mr.mr;
+return SPI_OK;
+}
