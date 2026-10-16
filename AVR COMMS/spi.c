@@ -81,3 +81,4 @@ u_avr32_spi_mr.MR.pcs = (1<<AVR32_SPI_MR_PCS_SIZE) -1;
 spi->mr = u_avr32_spi_mr.mr;
 return SPI_OK;
 }
+//loading...
