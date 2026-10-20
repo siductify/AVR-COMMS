@@ -81,4 +81,10 @@ u_avr32_spi_mr.MR.pcs = (1<<AVR32_SPI_MR_PCS_SIZE) -1;
 spi->mr = u_avr32_spi_mr.mr;
 return SPI_OK;
 }
-//loading...
+spi_status_t spi_selectChip(volatile avr32_spi_t *spi, unsigned char chip){
+    spi->mr |= AVR32_SPI_MR_PCS_MASK;
+        if(spi->mr & AVR32_SPI_MR_PCSDEC_MASK){
+            if(chip>14)
+            return SPI_ERROR_ARGUMENT;
+        }
+}
