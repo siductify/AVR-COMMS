@@ -88,3 +88,5 @@ spi_status_t spi_selectChip(volatile avr32_spi_t *spi, unsigned char chip){
             return SPI_ERROR_ARGUMENT;
         }
 }
+
+//loading...
